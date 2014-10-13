@@ -33,6 +33,10 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error parse bind url: %s\n", err)
 	}
 
+	if u.Host == "" {
+		u.Host = u.Path
+	}
+
 	l, err = net.Listen(u.Scheme, u.Host)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Err listening: %s\n", err)
