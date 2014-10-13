@@ -29,21 +29,22 @@ func main() {
 	}
 
 	u, err := url.Parse(*addr)
+	die(err)
+
+	if u.Scheme == "unix" {
+		l, err = net.Listen(u.Scheme, u.Path)
+		die(err)
+		die(os.Chmod(u.Path, 0666))
+	} else {
+		l, err = net.Listen(u.Scheme, u.Host)
+		die(err)
+	}
+
+	die(http.Serve(l, http.HandlerFunc(Echo)))
+}
+
+func die(err error) {
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error parse bind url: %s\n", err)
-	}
-
-	if u.Host == "" {
-		u.Host = u.Path
-	}
-
-	l, err = net.Listen(u.Scheme, u.Host)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Err listening: %s\n", err)
-		os.Exit(1)
-	}
-
-	if err := http.Serve(l, http.HandlerFunc(Echo)); err != nil {
 		fmt.Fprintf(os.Stderr, "Err: %s\n", err)
 		os.Exit(1)
 	}
