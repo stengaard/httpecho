@@ -10,12 +10,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 func Echo(w http.ResponseWriter, req *http.Request) {
-	spew.Fdump(w, req)
+	req.Write(w)
 }
 
 func main() {
