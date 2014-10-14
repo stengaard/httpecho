@@ -38,8 +38,8 @@ func main() {
 		l, err = net.Listen(u.Scheme, u.Path)
 		die(err)
 		die(os.Chmod(u.Path, 0666))
-		c := make(chan os.Signal, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-		signal.Notify(c)
+		c := make(chan os.Signal)
+		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 		go func() {
 			<-c
 			// remove the socket before exit
